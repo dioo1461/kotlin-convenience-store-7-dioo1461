@@ -2,7 +2,7 @@ package store.model.repository
 
 import store.model.domain.Promotion
 import store.model.domain.PromotionType
-import store.util.FileLoader
+import util.FileLoader
 import java.time.LocalDate
 
 class PromotionRepository {

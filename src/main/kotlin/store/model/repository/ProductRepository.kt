@@ -1,7 +1,7 @@
 package store.model.repository
 
 import store.model.domain.Product
-import store.util.FileLoader
+import util.FileLoader
 
 class ProductRepository {
     private val products = mutableListOf<Product>()
