@@ -3,9 +3,9 @@ package store.model.domain
 import java.time.LocalDate
 
 data class Promotion(
-    val productName: String,
-    val type: PromotionType,
+    val name: String,
+    val requiredQuantity: Int,
+    val rewardQuantity: Int,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    var stock: Int
 )

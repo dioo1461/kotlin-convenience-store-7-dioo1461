@@ -1,21 +1,20 @@
 package store.model.service
 
 import store.model.repository.PromotionRepository
-import store.values.ErrorMessages
+import java.time.LocalDate
 
 class PromotionService(private val promotionRepository: PromotionRepository) {
-
-    fun checkStockAvailability(productName: String, quantity: Int): Boolean {
-        return promotionRepository.getStock(productName) >= quantity
+    fun getRequiredQuantity(promotionName: String): Int? {
+        return promotionRepository.findByName(promotionName)?.requiredQuantity
     }
 
-    fun decreaseStock(productName: String, quantity: Int): Boolean {
-        val remainingStock = promotionRepository.getStock(productName) - quantity
-        if (remainingStock < quantity) {
-            return false
-        }
-        promotionRepository.setStock(productName, quantity)
-        return true
+    fun getRewardQuantity(promotionName: String): Int? {
+        return promotionRepository.findByName(promotionName)?.rewardQuantity
+    }
+    
+    fun checkIsExpired(promotionName: String, date: LocalDate): Boolean {
+        val promotion = promotionRepository.findByName(promotionName) ?: return false
+        return date.isBefore(promotion.startDate) || date.isAfter(promotion.endDate)
     }
 
 }

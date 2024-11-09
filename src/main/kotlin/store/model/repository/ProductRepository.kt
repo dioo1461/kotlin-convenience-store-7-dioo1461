@@ -40,11 +40,14 @@ class ProductRepository(filePath: String) {
 
     private fun parseProduct(line: String): Product {
         val tokens = line.split(",")
-
         val name = tokens[0].trim()
         val price = tokens[1].trim().toInt()
         val count = tokens[2].trim().toInt()
-
-        return Product(name, price, count)
+        val promotion = tokens[3].trim()
+        
+        if (promotion == "null") {
+            return Product(name, price, count)
+        }
+        return Product(name, price, count, promotion)
     }
 }
