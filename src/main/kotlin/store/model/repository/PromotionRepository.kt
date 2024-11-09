@@ -18,31 +18,38 @@ class PromotionRepository(filePath: String) {
         }
     }
 
-    fun findByProductName(name: String): Promotion? {
-        return promotions.find { it.productName == name }
+    fun findByName(promotionName: String): Promotion {
+        val promotion = promotions.find { it.name == promotionName }
+        if (promotion == null) {
+            throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PROMOTION)
+        }
+        return promotion
     }
 
     fun getAll(): List<Promotion> {
         return promotions
     }
 
-    fun setStock(name: String, quantity: Int) {
-        val promotion = findByProductName(name)
-            ?: throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PROMOTION)
-
+    fun setStock(promotionName: String, quantity: Int) {
+        val promotion = findByName(promotionName)
         promotion.stock = quantity
+    }
+
+    fun getStock(name: String): Int {
+        val promotion = findByName(name)
+        return promotion.stock
     }
 
     private fun parsePromotion(line: String): Promotion {
         val tokens = line.split(",")
 
-        val productName = tokens[0].trim()
+        val name = tokens[0].trim()
         val type = PromotionType.fromString(tokens[1].trim())
         val startDate = parseDate(tokens[2].trim())
         val endDate = parseDate(tokens[3].trim())
         val promotionStock = tokens[4].trim().toInt()
 
-        return Promotion(productName, type, startDate, endDate, promotionStock)
+        return Promotion(name, type, startDate, endDate, promotionStock)
     }
 
     private fun parseDate(dateString: String): LocalDate {

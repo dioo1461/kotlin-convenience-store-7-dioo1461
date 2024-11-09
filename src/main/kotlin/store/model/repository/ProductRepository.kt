@@ -1,7 +1,6 @@
 package store.model.repository
 
 import store.model.domain.Product
-import store.model.domain.Promotion
 import store.values.ErrorMessages
 import util.FileLoader
 
@@ -17,8 +16,12 @@ class ProductRepository(filePath: String) {
         }
     }
 
-    fun findByName(name: String): Product? {
-        return products.find { it.name == name }
+    fun findByName(productName: String): Product {
+        val product = products.find { it.name == productName }
+        if (product == null) {
+            throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PRODUCT)
+        }
+        return product
     }
 
     fun getAll(): List<Product> {
@@ -27,8 +30,12 @@ class ProductRepository(filePath: String) {
 
     fun setStock(name: String, quantity: Int) {
         val product = findByName(name)
-            ?: throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PRODUCT)
         product.stock = quantity
+    }
+
+    fun getStock(name: String): Int {
+        val product = findByName(name)
+        return product.stock
     }
 
     private fun parseProduct(line: String): Product {
