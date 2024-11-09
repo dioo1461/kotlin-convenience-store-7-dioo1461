@@ -2,6 +2,7 @@ package store.model.repository
 
 import store.model.domain.Promotion
 import store.model.domain.PromotionType
+import store.values.ErrorMessages
 import util.FileLoader
 import java.time.LocalDate
 
@@ -15,6 +16,21 @@ class PromotionRepository(filePath: String) {
             val promotion = parsePromotion(line)
             promotions.add(promotion)
         }
+    }
+
+    fun findByProductName(name: String): Promotion? {
+        return promotions.find { it.productName == name }
+    }
+
+    fun getAll(): List<Promotion> {
+        return promotions
+    }
+
+    fun setStock(name: String, quantity: Int) {
+        val promotion = findByProductName(name)
+            ?: throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PROMOTION)
+
+        promotion.stock = quantity
     }
 
     private fun parsePromotion(line: String): Promotion {
@@ -35,4 +51,6 @@ class PromotionRepository(filePath: String) {
         val day = dateString.substring(6, 8).toInt()
         return LocalDate.of(year, month, day)
     }
+
+
 }
