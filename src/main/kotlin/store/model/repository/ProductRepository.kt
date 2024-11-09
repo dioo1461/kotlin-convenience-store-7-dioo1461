@@ -3,11 +3,11 @@ package store.model.repository
 import store.model.domain.Product
 import util.FileLoader
 
-class ProductRepository {
+class ProductRepository(filePath: String) {
     private val products = mutableListOf<Product>()
 
-    fun loadProducts() {
-        val lines = FileLoader.loadLines("src/main/resources/products.md")
+    init {
+        val lines = FileLoader.loadLines(filePath)
         lines.drop(1)
         lines.forEach { line ->
             val product = parseProduct(line)

@@ -5,11 +5,11 @@ import store.model.domain.PromotionType
 import util.FileLoader
 import java.time.LocalDate
 
-class PromotionRepository {
+class PromotionRepository(filePath: String) {
     private val promotions = mutableListOf<Promotion>()
 
-    fun loadPromotions() {
-        val lines = FileLoader.loadLines("src/main/resources/promotions.md")
+    init {
+        val lines = FileLoader.loadLines(filePath)
         lines.drop(1)
         lines.forEach { line ->
             val promotion = parsePromotion(line)
