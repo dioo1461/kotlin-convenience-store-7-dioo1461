@@ -11,33 +11,35 @@ object OutputView {
 
     fun printProductList(products: List<Product>) {
         products.forEach { product ->
-            val stockInfo = getStockInfo(product.stock)
-            val promotionInfo = product.promotionName ?: ""
-            println("${product.name} ${"%,d".format(product.price)}원 $stockInfo $promotionInfo")
+            val formattedStock = formatStock(product.stock)
+            if (product.promotionName != null) {
+                val formattedPromotionStock = formatStock(product.promotionStock)
+                println("- ${product.name} ${"%,d".format(product.price)}원 $formattedPromotionStock ${product.promotionName}")
+            }
+            println("- ${product.name} ${"%,d".format(product.price)}원 $formattedStock")
         }
     }
 
     fun printReceipt(receipt: Receipt) {
-        println("==============W 편의점================")
-        println("상품명\t\t수량\t금액")
+        println("============== W 편의점 ================")
+        println(String.format("%-12s %5s %10s", "상품명", "수량", "금액"))
         receipt.purchasedItems.forEach { item ->
-            println("${item.name}\t\t${item.quantity}\t${item.price * item.quantity}")
+            println(String.format("%-12s %5d %10d", item.name, item.quantity, item.price * item.quantity))
         }
-        if (receipt.giftedItems.isNotEmpty()) {
-            println("=============증\t정===============")
-            receipt.giftedItems.forEach { gift ->
-                println("${gift.name}\t\t${gift.quantity}")
-            }
+        println("============= 증    정 ===============")
+        receipt.giftedItems.forEach { gift ->
+            println(String.format("%-12s %5d", gift.name, gift.quantity))
         }
-        println("====================================")
-        println("총구매액\t\t${receipt.totalQuantity}\t${receipt.totalPrice}")
-        println("행사할인\t\t\t-${receipt.promotionDiscountAmount}")
-        println("멤버십할인\t\t\t-${receipt.membershipDiscountAmount}")
-        println("내실돈\t\t\t${receipt.finalPrice}")
+        println("======================================")
+        println(String.format("%-12s %5d %10d", "총구매액", receipt.totalQuantity, receipt.totalPrice))
+        println(String.format("%-12s %10s %10s", "행사할인", "", "-${receipt.promotionDiscountAmount}"))
+        println(String.format("%-12s %10s %10s", "멤버십할인", "", "-${receipt.membershipDiscountAmount}"))
+        println(String.format("%-12s %10s %10d", "내실돈", "", receipt.finalPrice))
     }
 
-    private fun getStockInfo(stock: Int): String {
-        return if (stock > 0) "${stock}개" else "품절"
+
+    private fun formatStock(stock: Int): String {
+        return if (stock > 0) "${stock}개" else "재고 없음"
     }
 
 }
