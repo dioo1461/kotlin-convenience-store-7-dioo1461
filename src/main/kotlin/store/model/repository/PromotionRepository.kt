@@ -28,19 +28,18 @@ class PromotionRepository(filePath: String) {
 
         val name = tokens[0].trim()
         val requiredQuantity = tokens[1].trim().toInt()
-        val rewardQuantity = tokens[2].trim().toInt()
-        val startDate = parseDate(tokens[2].trim())
-        val endDate = parseDate(tokens[3].trim())
+        val giveawayQuantity = tokens[2].trim().toInt()
+        val startDate = parseDate(tokens[3].trim())
+        val endDate = parseDate(tokens[4].trim())
 
-        return Promotion(name, requiredQuantity, rewardQuantity, startDate, endDate)
+        return Promotion(name, requiredQuantity, giveawayQuantity, startDate, endDate)
     }
 
     private fun parseDate(dateString: String): LocalDate {
-        val year = dateString.substring(0, 4).toInt()
-        val month = dateString.substring(4, 6).toInt()
-        val day = dateString.substring(6, 8).toInt()
+        val cleanedDateString = dateString.replace("-", "")
+        val year = cleanedDateString.substring(0, 4).toInt()
+        val month = cleanedDateString.substring(4, 6).toInt()
+        val day = cleanedDateString.substring(6, 8).toInt()
         return LocalDate.of(year, month, day)
     }
-
-
 }

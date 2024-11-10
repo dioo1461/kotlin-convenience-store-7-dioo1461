@@ -54,11 +54,7 @@ class ProductRepository(filePath: String) {
         val price = tokens[1].trim().toInt()
         val count = tokens[2].trim().toInt()
         val promotionName = tokens[3].trim()
-        println(name)
-        println(price)
-        println(count)
-        println(promotionName)
-
+        
         upsertProductList(name, price, count, promotionName)
     }
 
