@@ -1,11 +1,12 @@
 package store.model.service
 
 import store.model.domain.Purchase
+import store.values.ErrorMessages
 import store.values.Messages
 import store.view.InputView
 
-class InputService {
-    fun requestPurchases(): List<Pair<String, Int>> {
+class InputService(private val productService: ProductService) {
+    fun requestPurchases(): List<Purchase> {
         val input = InputView.requestPurchaseItemAndAmount()
         return parsePurchaseInput(input)
     }
@@ -31,11 +32,13 @@ class InputService {
     }
 
     //  (예: [사이다-2],[감자칩-1])
-    private fun parsePurchaseInput(input: String): List<Pair<String, Int>> {
+    private fun parsePurchaseInput(input: String): List<Purchase> {
         val inputList = input.split(",")
         return inputList.map {
             val item = it.removeSurrounding("[", "]").split("-")
-            Pair(item[0], item[1].toInt())
+            val product = productService.findProduct(item[0])
+            require(product != null) { ErrorMessages.PRODUCT_NOT_FOUND }
+            Purchase(product, item[1].toInt())
         }
     }
 

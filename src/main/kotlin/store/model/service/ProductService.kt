@@ -1,5 +1,6 @@
 package store.model.service
 
+import store.model.domain.Product
 import store.model.repository.ProductRepository
 import store.values.ErrorMessages
 
@@ -15,6 +16,10 @@ class ProductService(private val productRepository: ProductRepository) {
         require(remainingStock >= 0) { ErrorMessages.PROMOTION_STOCK_CANNOT_BE_NEGATIVE }
         productRepository.setPromotionStock(productName, remainingStock)
 
+    }
+
+    fun findProduct(productName: String): Product? {
+        return productRepository.findProduct(productName)
     }
 
     fun getPromotionName(productName: String): String? {

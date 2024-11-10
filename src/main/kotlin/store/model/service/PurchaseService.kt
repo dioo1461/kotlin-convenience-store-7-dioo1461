@@ -69,5 +69,9 @@ class PurchaseService(
         return ApplyPromotionResult(purchaseAmount, giveawayAmount)
     }
 
+    fun applyMembershipDiscount(totalPrice: Int): Int {
+        if (inputService.askForMembershipDiscount()) return totalPrice
+        return (totalPrice * 0.3).toInt().coerceAtMost(8000)
+    }
 
 }

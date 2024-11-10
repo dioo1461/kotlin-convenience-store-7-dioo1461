@@ -9,6 +9,7 @@ import store.values.ErrorMessages
 import store.view.InputView
 import store.view.OutputView
 import camp.nextstep.edu.missionutils.DateTimes
+import store.model.service.PurchaseService
 import store.model.service.ReceiptBuilder
 
 class PurchaseController(productFilePath: String, promotionFilePath: String) {
@@ -16,15 +17,16 @@ class PurchaseController(productFilePath: String, promotionFilePath: String) {
     private val promotionRepository = PromotionRepository(promotionFilePath)
     private val productService = ProductService(productRepository)
     private val promotionService = PromotionService(promotionRepository)
-    private val inputService = InputService()
+    private val inputService = InputService(productService)
+    private val purchaseService = PurchaseService(productService, promotionService, inputService)
 
     fun run() {
         while (true) try {
             OutputView.printWelcomeMessage()
-            OutputView.printProductList(productRepository.getAllNormalProducts())
+            OutputView.printProductList(productRepository.getAllProducts())
             val purchases = inputService.requestPurchases()
-            ReceiptBuilder().printReceipt()
-
+            val receipt = ReceiptBuilder(purchases, purchaseService).applyPromotions().applyMembershipDiscount().build()
+            OutputView.printReceipt(receipt)
         } catch (e: IllegalArgumentException) {
             println(e.message)
         }

@@ -19,6 +19,9 @@ class ProductRepository(filePath: String) {
         return products.find { it.name == productName }
     }
 
+    fun getAllProducts(): List<Product> {
+        return products
+    }
 
     fun setStock(productName: String, quantity: Int) {
         val product = findProduct(productName)

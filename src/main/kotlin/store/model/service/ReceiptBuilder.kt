@@ -22,33 +22,28 @@ class ReceiptBuilder(
     init {
         purchasedList.forEach { purchase ->
             val purchasedItem = PurchasedItem(purchase.product.name, purchase.quantity, purchase.product.price)
-            purchasedItems.add(purchasedItem)
-            totalQuantity += purchase.quantity
-            totalPrice += purchase.product.price
+            this.purchasedItems.add(purchasedItem)
+            this.totalQuantity += purchase.quantity
+            this.totalPrice += purchase.product.price
         }
-        finalPrice = totalPrice
+        this.finalPrice = totalPrice
     }
 
-    fun applyPromotions() {
+    fun applyPromotions(): ReceiptBuilder {
         purchasedList.forEach { purchase ->
             // 프로모션 혜택을 적용하고, 결과에 따라 구매 및 증정 물품 수량을 업데이트
             val result = purchaseService.applyPromotionIfAvailable(purchase)
-            promotionDiscountAmount += result.giveawayAmount * purchase.product.price
-
-            if (result.giveawayAmount > 0) {
-                giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount))
-            }
-
-            // 프로모션 할인 금액을 최종 가격에서 차감
-            finalPrice -= promotionDiscountAmount
+            this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
+            this.finalPrice -= promotionDiscountAmount
+            this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount))
         }
+        return this
     }
 
-    fun applyMembershipDiscount(isMember: Boolean) {
-        if (isMember) {
-            membershipDiscountAmount = (finalPrice * 0.3).toInt().coerceAtMost(8000) // 최대 한도 8,000원
-            finalPrice -= membershipDiscountAmount
-        }
+    fun applyMembershipDiscount(): ReceiptBuilder {
+        this.membershipDiscountAmount = purchaseService.applyMembershipDiscount(totalPrice)
+        this.finalPrice -= membershipDiscountAmount
+        return this
     }
 
     fun build(): Receipt {

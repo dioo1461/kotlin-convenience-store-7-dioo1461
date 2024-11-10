@@ -1,5 +1,10 @@
 package store
 
+import store.controller.PurchaseController
+
 fun main() {
-    // TODO: 프로그램 구현
+    val productFilePath = "src/main/resources/products.md"
+    val promotionFilePath = "src/main/resources/promotions.md"
+    val purchaseController = PurchaseController(productFilePath, promotionFilePath)
+    purchaseController.run()
 }
