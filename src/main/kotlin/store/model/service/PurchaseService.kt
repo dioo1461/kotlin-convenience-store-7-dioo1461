@@ -11,7 +11,7 @@ class PurchaseService(
 ) {
     fun getPromotionIfAvailable(purchase: Purchase): Promotion? {
         val promotionName = productService.getPromotionName(purchase.product.name) ?: return null
-        if (!promotionService.checkIsExpired(promotionName, DateTimes.now())) return null
+        if (!promotionService.checkIsNotExpired(promotionName, DateTimes.now())) return null
         if (!productService.checkPromotionStockAvailability(promotionName, purchase.quantity)) return null
         return promotionService.findPromotion(promotionName)
     }

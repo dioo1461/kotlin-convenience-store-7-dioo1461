@@ -2,11 +2,10 @@ package store.model.service
 
 import store.model.domain.Promotion
 import store.model.repository.PromotionRepository
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class PromotionService(private val promotionRepository: PromotionRepository) {
-    fun checkIsExpired(promotionName: String, date: LocalDateTime): Boolean {
+    fun checkIsNotExpired(promotionName: String, date: LocalDateTime): Boolean {
         val promotion = promotionRepository.findByName(promotionName) ?: return false
         return promotion.endDate.isBefore(date.toLocalDate())
     }
@@ -14,5 +13,4 @@ class PromotionService(private val promotionRepository: PromotionRepository) {
     fun findPromotion(promotionName: String): Promotion? {
         return promotionRepository.findByName(promotionName)
     }
-
 }
