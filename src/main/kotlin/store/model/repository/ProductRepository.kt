@@ -11,43 +11,65 @@ class ProductRepository(filePath: String) {
         val lines = FileLoader.loadLines(filePath)
         lines.drop(1)
         lines.forEach { line ->
-            val product = parseProduct(line)
-            products.add(product)
+            parseProduct(line)
         }
     }
 
-    fun findByName(productName: String): Product {
-        val product = products.find { it.name == productName }
-        if (product == null) {
-            throw IllegalArgumentException(ErrorMessages.NON_EXISTING_PRODUCT)
-        }
-        return product
+    fun findProduct(productName: String): Product? {
+        return products.find { it.name == productName }
     }
 
-    fun getAll(): List<Product> {
-        return products
-    }
 
-    fun setStock(name: String, quantity: Int) {
-        val product = findByName(name)
+    fun setStock(productName: String, quantity: Int) {
+        val product = findProduct(productName)
+        require(product != null) { ErrorMessages.PRODUCT_NOT_FOUND }
         product.stock = quantity
     }
 
-    fun getStock(name: String): Int {
-        val product = findByName(name)
+    fun getStock(productName: String): Int {
+        val product = findProduct(productName)
+        require(product != null) { ErrorMessages.PRODUCT_NOT_FOUND }
         return product.stock
     }
 
-    private fun parseProduct(line: String): Product {
+    fun setPromotionStock(productName: String, quantity: Int) {
+        val product = findProduct(productName)
+        require(product != null) { ErrorMessages.PRODUCT_NOT_FOUND }
+        require(product.promotionName != null) { ErrorMessages.PROMOTION_NOT_FOUND }
+        product.promotionStock = quantity
+    }
+
+    fun getPromotionStock(productName: String): Int {
+        val product = findProduct(productName)
+        require(product != null) { ErrorMessages.PRODUCT_NOT_FOUND }
+        require(product.promotionName != null) { ErrorMessages.PROMOTION_NOT_FOUND }
+        return product.promotionStock
+    }
+
+    private fun parseProduct(line: String) {
         val tokens = line.split(",")
         val name = tokens[0].trim()
         val price = tokens[1].trim().toInt()
         val count = tokens[2].trim().toInt()
-        val promotion = tokens[3].trim()
-        
-        if (promotion == "null") {
-            return Product(name, price, count)
+        val promotionName = tokens[3].trim()
+        upsertProductList(name, price, count, promotionName)
+    }
+
+    private fun upsertProductList(name: String, price: Int, count: Int, promotionName: String) {
+        val product = products.find { it.name == name }
+        if (promotionName == "null") {
+            if (product == null) {
+                products.add(Product(name, price, count, null)) // 제품이 없으면 새로 추가
+                return
+            }
+            product.stock = count
+            return
         }
-        return Product(name, price, count, promotion)
+        if (product == null) {
+            products.add(Product(name, price, count, promotionName)) // 제품이 없으면 새로 추가
+            return
+        }
+        product.stock = count
+        product.promotionName = promotionName
     }
 }

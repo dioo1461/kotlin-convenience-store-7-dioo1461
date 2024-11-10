@@ -8,6 +8,8 @@ import store.model.service.PromotionService
 import store.values.ErrorMessages
 import store.view.InputView
 import store.view.OutputView
+import camp.nextstep.edu.missionutils.DateTimes
+import store.model.service.ReceiptBuilder
 
 class PurchaseController(productFilePath: String, promotionFilePath: String) {
     private val productRepository = ProductRepository(productFilePath)
@@ -19,22 +21,14 @@ class PurchaseController(productFilePath: String, promotionFilePath: String) {
     fun run() {
         while (true) try {
             OutputView.printWelcomeMessage()
-            OutputView.printProductList(productRepository.getAll())
-
-            val purchasePairs = inputService.parseInput(InputView.requestPurchaseItemAndAmount())
-            purchasePairs.forEach {
-                val (productName, quantity) = it
-
-                require(productService.checkStockAvailability(productName, quantity)) {
-                    ErrorMessages.QUANTITY_EXCEEDS_STOCK
-                }
-                
-
-            }
+            OutputView.printProductList(productRepository.getAllNormalProducts())
+            val purchases = inputService.requestPurchases()
+            ReceiptBuilder().printReceipt()
 
         } catch (e: IllegalArgumentException) {
             println(e.message)
         }
     }
+
 
 }

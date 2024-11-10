@@ -1,13 +1,11 @@
 package store.view
 
 import store.model.domain.Product
-import store.model.domain.Promotion
-import store.model.domain.PromotionType
 import store.values.Messages
 
 object OutputView {
     fun printWelcomeMessage() {
-        println(Messages.WELCOME_MESSAGE)
+        println(Messages.WELCOME)
     }
 
     fun printProductList(products: List<Product>) {

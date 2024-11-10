@@ -59,6 +59,7 @@
     - 들여쓰기(indentation) depth는 최대 2까지만 허용한다. (e.g., while문 안에 if문이 있으면 들여쓰기는 2이다)
 - **테스트**:
     - JUnit 5와 AssertJ를 사용하여 각 기능에 대한 단위 테스트를 작성해, 기능이 정상적으로 작동하는지 확인한다.
+    - UI(System.out, System.in, Scanner) 관련 로직은 단위 테스트에서 제외한다.
 - **프로젝트 구성**:
     - Java가 아닌 Kotlin 코드로만 구현한다.
     - 프로그램 실행의 시작점은 `Application`의 `main()`이어야 한다.
@@ -71,8 +72,6 @@
 - **else 사용 지양**:
     - 가능하면 `else`를 사용하지 않고 if 조건절에서 값을 return하는 방식으로 구현한다. (guard clause)
 - **Enum 클래스 사용**: Enum 클래스를 적용하여 프로그램을 구현한다.
-- **UI 로직**:
-    - UI(System.out, System.in, Scanner) 관련 로직은 단위 테스트에서 제외한다.
 - **입출력 담당 클래스**:
     - InputView와 OutputView 클래스를 별도로 구현하여, 입출력 관련 로직을 분리한다.
     - 클래스 이름, 메소드 반환 유형, 시그니처 등은 자유롭게 수정할 수 있다.
