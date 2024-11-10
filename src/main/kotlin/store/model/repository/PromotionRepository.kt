@@ -9,8 +9,7 @@ class PromotionRepository(filePath: String) {
 
     init {
         val lines = FileLoader.loadLines(filePath)
-        lines.drop(1)
-        lines.forEach { line ->
+        lines.drop(1).forEach { line ->
             val promotion = parsePromotion(line)
             promotions.add(promotion)
         }
