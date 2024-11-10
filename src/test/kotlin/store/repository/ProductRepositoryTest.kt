@@ -11,13 +11,14 @@ class ProductRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-        // 임시 파일 생성 및 내용 작성
         testFile = File.createTempFile("test_products", ".md").apply {
             writeText(
                 """
                 name,price,quantity,promotion
-                콜라,1000,10,탄산2+1
-                사이다,1000,8,null
+                콜라,1000,5,탄산2+1
+                콜라,1000,10,null
+                사이다,1000,5,탄산2+1
+                사이다,1000,10,null
                 """.trimIndent()
             )
             deleteOnExit()
@@ -42,6 +43,12 @@ class ProductRepositoryTest {
     }
 
     @Test
+    fun `재고를 올바르게 가져오는지 테스트`() {
+        val stock = productRepository.getStock("콜라")
+        assertEquals(10, stock)
+    }
+
+    @Test
     fun `재고를 올바르게 설정하고 가져올 수 있는지 테스트`() {
         productRepository.setStock("콜라", 5)
         val stock = productRepository.getStock("콜라")
@@ -49,14 +56,20 @@ class ProductRepositoryTest {
     }
 
     @Test
-    fun `프로모션 재고를 설정하고 올바르게 가져오는지 테스트`() {
-        productRepository.setPromotionStock("콜라", 3)
+    fun `프로모션 재고를 올바르게 가져오는지 테스트`() {
         val promotionStock = productRepository.getPromotionStock("콜라")
-        assertEquals(3, promotionStock)
+        assertEquals(5, promotionStock)
+    }
+
+    @Test
+    fun `프로모션 재고를 설정하고 올바르게 가져오는지 테스트`() {
+        productRepository.setPromotionStock("콜라", 1)
+        val promotionStock = productRepository.getPromotionStock("콜라")
+        assertEquals(1, promotionStock)
     }
 
     @Test
     fun `존재하지 않는 제품의 재고를 가져올 때 예외 발생`() {
-        
+
     }
 }

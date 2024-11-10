@@ -54,7 +54,7 @@ class ProductRepository(filePath: String) {
         val price = tokens[1].trim().toInt()
         val count = tokens[2].trim().toInt()
         val promotionName = tokens[3].trim()
-        
+
         upsertProductList(name, price, count, promotionName)
     }
 
@@ -69,10 +69,10 @@ class ProductRepository(filePath: String) {
             return
         }
         if (product == null) {
-            products.add(Product(name, price, count, promotionName)) // 제품이 없으면 새로 추가
+            products.add(Product(name, price, 0, promotionName, count)) // 제품이 없으면 새로 추가
             return
         }
-        product.stock = count
+        product.promotionStock = count
         product.promotionName = promotionName
     }
 }
