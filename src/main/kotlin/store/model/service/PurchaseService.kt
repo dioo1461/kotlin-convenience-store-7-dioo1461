@@ -70,7 +70,7 @@ class PurchaseService(
     }
 
     fun applyMembershipDiscount(totalPrice: Int): Int {
-        if (inputService.askForMembershipDiscount()) return totalPrice
+        if (!inputService.askForMembershipDiscount()) return 0
         return (totalPrice * 0.3).toInt().coerceAtMost(8000)
     }
 

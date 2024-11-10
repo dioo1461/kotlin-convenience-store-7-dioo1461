@@ -24,7 +24,7 @@ class ReceiptBuilder(
             val purchasedItem = PurchasedItem(purchase.product.name, purchase.quantity, purchase.product.price)
             this.purchasedItems.add(purchasedItem)
             this.totalQuantity += purchase.quantity
-            this.totalPrice += purchase.product.price
+            this.totalPrice += purchase.product.price * purchase.quantity
         }
         this.finalPrice = totalPrice
     }
