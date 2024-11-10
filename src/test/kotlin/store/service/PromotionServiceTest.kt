@@ -31,21 +31,21 @@ class PromotionServiceTest {
     @Test
     fun `checkIsNotExpired - 유효한 프로모션에 대해 테스트`() {
         val date = LocalDateTime.of(2024, 6, 15, 0, 0)
-        val isExpired = promotionService.checkIsNotExpired("유효한_프로모션", date)
-        assertFalse(isExpired)
+        val availability = promotionService.checkIsNotExpired("유효한_프로모션", date)
+        assertTrue(availability)
     }
 
     @Test
     fun `checkIsExpired - 만료된 프로모션에 대해 테스트`() {
         val date = LocalDateTime.of(2024, 6, 1, 0, 0)
-        val isExpired = promotionService.checkIsNotExpired("만료된_프로모션", date)
-        assertFalse(isExpired)
+        val availability = promotionService.checkIsNotExpired("만료된_프로모션", date)
+        assertFalse(availability)
     }
 
     @Test
     fun `findPromotion - 유효한 프로모션을 올바르게 가져오는지 테스트`() {
         val promotion = promotionService.findPromotion("유효한_프로모션")
-        assertNotNull(promotion, "유효한_프로모션을 찾았을 때 null이 아니어야 합니다.")
+        assertNotNull(promotion)
         assertEquals("유효한_프로모션", promotion?.name)
         assertEquals(2, promotion?.requiredQuantity)
         assertEquals(1, promotion?.giveawayQuantity)
