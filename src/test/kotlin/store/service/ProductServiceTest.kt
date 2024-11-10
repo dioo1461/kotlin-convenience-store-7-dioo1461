@@ -52,7 +52,7 @@ class ProductServiceTest {
     @Test
     fun `decreasePromotionStock - 정상적인 프로모션 재고 감소`() {
         productService.decreasePromotionStock("콜라", 1)
-        assertEquals(1, productService.getPromotionProductStock("콜라") - 1)
+        assertEquals(9, productService.getStock("콜라") - 1)
     }
 
     @Test
@@ -72,7 +72,7 @@ class ProductServiceTest {
 
     @Test
     fun `findProduct - 존재하지 않는 제품 조회시 null 반환`() {
-        val product = productService.findProduct("없는제품")
+        val product = productService.findProduct("존재하지_않는_제품")
         assertNull(product)
     }
 
@@ -83,8 +83,8 @@ class ProductServiceTest {
     }
 
     @Test
-    fun `getPromotionName - 프로모션 없는 제품의 프로모션 이름은 null`() {
-        val promotionName = productService.getPromotionName("사이다")
+    fun `getPromotionName - 존재하지 않는 제품의 프로모션 이름에 접근할 시 null 반환`() {
+        val promotionName = productService.getPromotionName("존재하지_않는_제품")
         assertNull(promotionName)
     }
 
