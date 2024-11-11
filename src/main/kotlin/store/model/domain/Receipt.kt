@@ -18,5 +18,6 @@ data class PurchasedItem(
 
 data class GiveawayItem(
     val name: String,
-    val quantity: Int
+    val quantity: Int,
+    val price: Int
 )

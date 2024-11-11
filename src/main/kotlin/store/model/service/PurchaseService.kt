@@ -3,6 +3,7 @@ package store.model.service
 import camp.nextstep.edu.missionutils.DateTimes
 import store.model.domain.Promotion
 import store.model.domain.Purchase
+import kotlin.math.min
 
 class PurchaseService(
     private val productService: ProductService,
@@ -33,24 +34,38 @@ class PurchaseService(
         val remainder = purchase.quantity % divider
 
         if (promotionStock < purchase.quantity - remainder) {
-            println("${promotion.name} 프로모션을 적용할 수 없습니다.")
-            val promotionStockConsumption = promotionStock - remainder
+            // 프로모션 재고 부족한 경우
+            val promotionStockConsumption = promotionStock / divider * divider
             val giveawayAmount = promotionStockConsumption / divider * promotion.giveawayQuantity
             val nonBenefitedAmount = purchase.quantity - promotionStockConsumption
             if (inputService.askForPurchasingNonBenefitedProducts(purchase.product.name, nonBenefitedAmount)) {
                 productService.decreaseStock(purchase.product.name, nonBenefitedAmount)
                 productService.decreasePromotionStock(purchase.product.name, promotionStockConsumption)
-                println("${promotion.name} 프로모션을 적용하고 나머지 ${nonBenefitedAmount}개를 구매합니다.")
                 return ApplyPromotionResult(purchase.quantity, giveawayAmount, 0)
             }
+            productService.decreaseStock(purchase.product.name, remainder)
             productService.decreasePromotionStock(purchase.product.name, promotionStockConsumption)
-            println("${promotion.name} 프로모션을 적용하지 않습니다.")
-            println("promotionStockConsumption: $promotionStockConsumption")
             return ApplyPromotionResult(promotionStockConsumption, giveawayAmount, nonBenefitedAmount)
         }
 
-        productService.decreasePromotionStock(purchase.product.name, 1)
-        return ApplyPromotionResult(1, 1, 1)
+        if (0 < remainder && remainder <= divider - promotion.giveawayQuantity) {
+            // 추가 증정품을 받을 수 있는 경우
+            val baseGiveaways = quotient * promotion.giveawayQuantity
+            val additionalGiveaways = min(remainder, productService.getPromotionStock(purchase.product.name))
+            val promotionStockConsumption = purchase.quantity - remainder
+            println("baseGiveaways: $baseGiveaways")
+            println("additionalGiveaways: $additionalGiveaways")
+            println("promotionStockConsumption: $promotionStockConsumption")
+            productService.decreasePromotionStock(purchase.product.name, promotionStockConsumption)
+            if (inputService.askForExtraGiveaways(purchase.product.name, remainder)) {
+                productService.decreasePromotionStock(purchase.product.name, remainder)
+                return ApplyPromotionResult(purchase.quantity + additionalGiveaways, baseGiveaways + additionalGiveaways, 0)
+            }
+            return ApplyPromotionResult(purchase.quantity, baseGiveaways, 0)
+        }
+
+        productService.decreasePromotionStock(purchase.product.name, purchase.quantity)
+        return ApplyPromotionResult(purchase.quantity, quotient * promotion.giveawayQuantity, 0)
     }
 
 

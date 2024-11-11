@@ -19,23 +19,24 @@ class ReceiptBuilder(
     private var finalPrice = 0
 
     init {
-        purchasedList.forEach { purchase ->
-            this.totalQuantity += purchase.quantity
-            this.totalPrice += purchase.product.price * purchase.quantity
-        }
-        this.finalPrice = totalPrice
+//        purchasedList.forEach { purchase ->
+//            this.totalQuantity += purchase.quantity
+//            this.totalPrice += purchase.product.price * purchase.quantity
+//        }
+//        this.finalPrice = totalPrice
     }
 
     fun applyPromotions(): ReceiptBuilder {
         purchasedList = purchasedList.map { purchase ->
             val result = purchaseService.applyPromotions(purchase)
+            println("${purchase.product.name} result: $result")
             purchase.quantity = result.totalAmount
-            this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
-            this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
-            this.finalPrice -= result.purchasedQuantityReduced * purchase.product.price
-            this.totalQuantity -= result.purchasedQuantityReduced
-            this.finalPrice -= promotionDiscountAmount
-            this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount))
+//            this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
+//            this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
+//            this.finalPrice -= result.purchasedQuantityReduced * purchase.product.price
+//            this.totalQuantity -= result.purchasedQuantityReduced
+//            this.finalPrice -= promotionDiscountAmount
+            this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount, purchase.product.price))
             purchase
         }
         return this
@@ -51,7 +52,17 @@ class ReceiptBuilder(
         purchasedList.forEach { purchase ->
             val purchasedItem = PurchasedItem(purchase.product.name, purchase.quantity, purchase.product.price)
             this.purchasedItems.add(purchasedItem)
+            this.totalQuantity += purchasedItem.quantity
+            this.totalPrice += purchasedItem.price * purchasedItem.quantity
         }
+        this.finalPrice = totalPrice
+        giveawayItems.forEach { giveawayItem ->
+            val discountedAmount = giveawayItem.quantity * giveawayItem.price
+            this.finalPrice -= discountedAmount
+            this.promotionDiscountAmount += giveawayItem.quantity * giveawayItem.price
+        }
+        this.finalPrice -= membershipDiscountAmount
+
         return Receipt(
             purchasedItems,
             giveawayItems,
