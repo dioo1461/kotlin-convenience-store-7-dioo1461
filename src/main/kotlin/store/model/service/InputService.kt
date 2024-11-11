@@ -6,11 +6,11 @@ import store.values.Messages
 import store.view.InputView
 
 class InputService(private val productService: ProductService) {
-
     fun requestPurchases(): List<Purchase> {
         val input = InputView.requestPurchaseItemAndAmount()
         val purchaseList = parsePurchaseInput(input)
         purchaseList.forEach {
+            require(it.quantity > 0) { ErrorMessages.INVALID_INPUT }
             require(
                 productService.checkWholeStockAvailability(
                     it.product.name,
