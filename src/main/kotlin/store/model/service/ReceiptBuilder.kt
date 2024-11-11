@@ -1,13 +1,12 @@
 package store.model.service
 
 import store.model.domain.GiveawayItem
-import store.model.domain.Promotion
 import store.model.domain.Purchase
 import store.model.domain.PurchasedItem
 import store.model.domain.Receipt
 
 class ReceiptBuilder(
-    private val purchasedList: List<Purchase>,
+    private var purchasedList: List<Purchase>,
     private val purchaseService: PurchaseService
 ) {
 
@@ -21,8 +20,6 @@ class ReceiptBuilder(
 
     init {
         purchasedList.forEach { purchase ->
-            val purchasedItem = PurchasedItem(purchase.product.name, purchase.quantity, purchase.product.price)
-            this.purchasedItems.add(purchasedItem)
             this.totalQuantity += purchase.quantity
             this.totalPrice += purchase.product.price * purchase.quantity
         }
@@ -30,12 +27,16 @@ class ReceiptBuilder(
     }
 
     fun applyPromotions(): ReceiptBuilder {
-        purchasedList.forEach { purchase ->
-            // 프로모션 혜택을 적용하고, 결과에 따라 구매 및 증정 물품 수량을 업데이트
-            val result = purchaseService.applyPromotionIfAvailable(purchase)
+        purchasedList = purchasedList.map { purchase ->
+            val result = purchaseService.applyPromotions(purchase)
+            purchase.quantity = result.totalAmount
             this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
+            this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
+            this.finalPrice -= result.purchasedQuantityReduced * purchase.product.price
+            this.totalQuantity -= result.purchasedQuantityReduced
             this.finalPrice -= promotionDiscountAmount
             this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount))
+            purchase
         }
         return this
     }
@@ -47,6 +48,10 @@ class ReceiptBuilder(
     }
 
     fun build(): Receipt {
+        purchasedList.forEach { purchase ->
+            val purchasedItem = PurchasedItem(purchase.product.name, purchase.quantity, purchase.product.price)
+            this.purchasedItems.add(purchasedItem)
+        }
         return Receipt(
             purchasedItems,
             giveawayItems,

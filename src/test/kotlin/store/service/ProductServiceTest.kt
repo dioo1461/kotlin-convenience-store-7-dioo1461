@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import store.model.domain.Product
 import store.model.repository.ProductRepository
 import store.model.service.ProductService
 import store.values.ErrorMessages
@@ -46,7 +45,7 @@ class ProductServiceTest {
         val exception = assertThrows<IllegalArgumentException> {
             productService.decreaseStock("콜라", 15)
         }
-        assertEquals(ErrorMessages.NORMAL_STOCK_CANNOT_BE_NEGATIVE, exception.message)
+        assertEquals(ErrorMessages.STOCK_CANNOT_BE_NEGATIVE, exception.message)
     }
 
     @Test

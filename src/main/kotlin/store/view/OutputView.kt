@@ -21,14 +21,15 @@ object OutputView {
     }
 
     fun printReceipt(receipt: Receipt) {
-        println("============== W 편의점 ================")
+        println("\n============== W 편의점 ================")
         println(String.format("%-12s %5s %10s", "상품명", "수량", "금액"))
         receipt.purchasedItems.forEach { item ->
             println(String.format("%-12s %5d %10d", item.name, item.quantity, item.price * item.quantity))
         }
         println("============= 증    정 ===============")
         receipt.giftedItems.forEach { gift ->
-            println(String.format("%-12s %5d", gift.name, gift.quantity))
+            if (gift.quantity > 0)
+                println(String.format("%-12s %5d", gift.name, gift.quantity))
         }
         println("======================================")
         println(String.format("%-12s %5d %10d", "총구매액", receipt.totalQuantity, receipt.totalPrice))

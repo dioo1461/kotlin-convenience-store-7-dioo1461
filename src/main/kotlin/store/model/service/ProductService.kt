@@ -7,7 +7,7 @@ import store.values.ErrorMessages
 class ProductService(private val productRepository: ProductRepository) {
     fun decreaseStock(productName: String, quantity: Int) {
         val remainingStock = productRepository.getStock(productName) - quantity
-        require(remainingStock >= 0) { ErrorMessages.NORMAL_STOCK_CANNOT_BE_NEGATIVE }
+        require(remainingStock >= 0) { ErrorMessages.STOCK_CANNOT_BE_NEGATIVE }
         productRepository.setStock(productName, remainingStock)
     }
 
@@ -15,7 +15,6 @@ class ProductService(private val productRepository: ProductRepository) {
         val remainingStock = productRepository.getPromotionStock(productName) - quantity
         require(remainingStock >= 0) { ErrorMessages.PROMOTION_STOCK_CANNOT_BE_NEGATIVE }
         productRepository.setPromotionStock(productName, remainingStock)
-
     }
 
     fun findProduct(productName: String): Product? {
@@ -26,7 +25,7 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.findProduct(productName)?.promotionName
     }
 
-    fun getPromotionProductStock(productName: String): Int {
+    fun getPromotionStock(productName: String): Int {
         return productRepository.getPromotionStock(productName)
     }
 

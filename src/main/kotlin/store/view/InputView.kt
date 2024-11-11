@@ -6,7 +6,7 @@ import store.values.Messages
 
 object InputView {
     fun requestPurchaseItemAndAmount(): String {
-        println(Messages.WELCOME)
+        println(Messages.PROMPT_PURCHASE_ITEM)
         return getInput()
     }
 
