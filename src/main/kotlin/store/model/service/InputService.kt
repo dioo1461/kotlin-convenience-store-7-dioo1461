@@ -42,6 +42,7 @@ class InputService(private val productService: ProductService) {
 
     //  (예: [사이다-2],[감자칩-1])
     private fun parsePurchaseInput(input: String): List<Purchase> {
+        require(input.matches(Regex("\\[.*]"))) { ErrorMessages.INVALID_FORMAT }
         val inputList = input.split(",")
         return inputList.map {
             val item = it.removeSurrounding("[", "]").split("-")
@@ -52,6 +53,7 @@ class InputService(private val productService: ProductService) {
     }
 
     private fun parseYesOrNo(input: String): Boolean {
+        require(input == "Y" || input == "N") { ErrorMessages.INVALID_INPUT }
         return input == "Y"
     }
 }
