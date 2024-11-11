@@ -67,11 +67,9 @@ class PurchaseService(
         productService.decreasePromotionStock(purchase.product.name, purchase.quantity)
         return ApplyPromotionResult(purchase.quantity, quotient * promotion.giveawayQuantity, 0)
     }
-
-
+    
     fun applyMembershipDiscount(totalPrice: Int): Int {
         if (!inputService.askForMembershipDiscount()) return 0
         return (totalPrice * 0.3).toInt().coerceAtMost(8000)
     }
-
 }

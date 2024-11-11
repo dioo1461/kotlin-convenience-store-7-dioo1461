@@ -23,7 +23,7 @@ class PurchaseController(productFilePath: String, promotionFilePath: String) {
             OutputView.printWelcomeMessage()
             OutputView.printProductList(productRepository.getAllProducts())
             val purchases = inputService.requestPurchases()
-            val receipt = ReceiptBuilder(purchases, purchaseService).applyPromotions().build()
+            val receipt = ReceiptBuilder(purchases, purchaseService).applyPromotions().applyMembershipDiscount().build()
             OutputView.printReceipt(receipt)
             if (!inputService.askForPurchaseAgain()) break
         } catch (e: IllegalArgumentException) {

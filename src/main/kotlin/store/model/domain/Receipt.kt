@@ -12,12 +12,12 @@ data class Receipt(
 
 data class PurchasedItem(
     val name: String,
-    val quantity: Int,
-    val price: Int
+    var quantity: Int,
+    var unitPrice: Int
 )
 
 data class GiveawayItem(
     val name: String,
-    val quantity: Int,
-    val price: Int
+    var quantity: Int,
+    var unitPrice: Int
 )
