@@ -9,7 +9,7 @@ class PromotionService(private val promotionRepository: PromotionRepository) {
     fun checkIsNotExpired(promotionName: String, date: LocalDateTime): Boolean {
         val promotion = promotionRepository.findByName(promotionName)
         require(promotion != null) { ErrorMessages.PROMOTION_NOT_FOUND }
-        return promotion.endDate.isAfter(date.toLocalDate())
+        return promotion.startDate.isBefore(date.toLocalDate()) && promotion.endDate.isAfter(date.toLocalDate())
     }
 
     fun findPromotion(promotionName: String): Promotion? {
