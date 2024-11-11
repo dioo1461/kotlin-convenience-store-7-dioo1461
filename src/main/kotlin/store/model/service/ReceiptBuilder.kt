@@ -31,16 +31,15 @@ class ReceiptBuilder(
     fun applyPromotions(): ReceiptBuilder {
         purchasedList.forEach { purchase ->
             val result = purchaseService.applyPromotions(purchase)
-            println("${purchase.product.name} result: $result")
             purchase.quantity = result.totalAmount
             val purchasedItem = purchasedItems.find { it.name == purchase.product.name }!!
             purchasedItem.quantity = result.totalAmount
 
             this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
             this.totalQuantity += result.additionalGiveawayAmount
+            this.totalPrice += result.additionalGiveawayAmount * purchase.product.price
             this.totalQuantity -= result.purchasedQuantityReduced
             this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
-            this.totalPrice += result.additionalGiveawayAmount * purchase.product.price
             this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount, purchase.product.price))
         }
         this.finalPrice = this.totalPrice - this.promotionDiscountAmount
@@ -49,8 +48,7 @@ class ReceiptBuilder(
 
     fun applyMembershipDiscount(): ReceiptBuilder {
         this.membershipDiscountAmount = purchaseService.applyMembershipDiscount(totalPrice)
-        this.finalPrice -= membershipDiscountAmount
-        println("membershipDiscountAmount: $membershipDiscountAmount")
+        this.finalPrice -= this.membershipDiscountAmount
         return this
     }
 

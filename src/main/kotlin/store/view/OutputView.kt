@@ -32,7 +32,6 @@ object OutputView {
                 println(String.format("%-12s %5d", gift.name, gift.quantity))
         }
         println("======================================")
-        println("======================================")
         println(String.format("%-12s %5d %,10d", "총구매액", receipt.totalQuantity, receipt.totalPrice))
         println(String.format("%-12s %10s %,10d", "행사할인", "", -receipt.promotionDiscountAmount))
         println(String.format("%-12s %10s %,10d", "멤버십할인", "", -receipt.membershipDiscountAmount))
