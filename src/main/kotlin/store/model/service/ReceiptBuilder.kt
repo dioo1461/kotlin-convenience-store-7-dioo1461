@@ -35,13 +35,15 @@ class ReceiptBuilder(
             purchase.quantity = result.totalAmount
             val purchasedItem = purchasedItems.find { it.name == purchase.product.name }!!
             purchasedItem.quantity = result.totalAmount
+
             this.promotionDiscountAmount += (purchase.product.price * result.giveawayAmount)
-            this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
-            this.finalPrice -= result.purchasedQuantityReduced * purchase.product.price
+            this.totalQuantity += result.additionalGiveawayAmount
             this.totalQuantity -= result.purchasedQuantityReduced
-            this.finalPrice -= promotionDiscountAmount
+            this.totalPrice -= result.purchasedQuantityReduced * purchase.product.price
+            this.totalPrice += result.additionalGiveawayAmount * purchase.product.price
             this.giveawayItems.add(GiveawayItem(purchase.product.name, result.giveawayAmount, purchase.product.price))
         }
+        this.finalPrice = this.totalPrice - this.promotionDiscountAmount
         return this
     }
 

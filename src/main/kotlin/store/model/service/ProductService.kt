@@ -33,6 +33,14 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.getStock(productName)
     }
 
+    fun checkWholeStockAvailability(productName: String, quantity: Int): Boolean {
+        val product = productRepository.findProduct(productName)
+        if (product!!.promotionName == null) {
+            return productRepository.getStock(productName) >= quantity
+        }
+        return productRepository.getStock(productName) + productRepository.getPromotionStock(productName) >= quantity
+    }
+
     fun checkStockAvailability(productName: String, quantity: Int): Boolean {
         return productRepository.getStock(productName) >= quantity
     }

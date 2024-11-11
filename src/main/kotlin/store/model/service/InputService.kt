@@ -8,7 +8,16 @@ import store.view.InputView
 class InputService(private val productService: ProductService) {
     fun requestPurchases(): List<Purchase> {
         val input = InputView.requestPurchaseItemAndAmount()
-        return parsePurchaseInput(input)
+        val purchaseList = parsePurchaseInput(input)
+        purchaseList.forEach {
+            require(
+                productService.checkWholeStockAvailability(
+                    it.product.name,
+                    it.quantity
+                )
+            ) { ErrorMessages.QUANTITY_EXCEEDS_STOCK }
+        }
+        return purchaseList
     }
 
     fun askForPurchasingNonBenefitedProducts(itemName: String, quantity: Int): Boolean {
